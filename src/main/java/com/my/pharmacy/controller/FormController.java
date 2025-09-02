@@ -10,10 +10,8 @@ public class FormController {
         return "main";
     }
 
-    @Controller
-    public class ("/outbut"){
-        @GetMapping("/")
-        public String mainForm() {
-            return "main";
-        }
+    @GetMapping("/output")
+    public String outputForm() {
+        return "output";
+    }
 }
