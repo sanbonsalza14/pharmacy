@@ -12,8 +12,10 @@ class KakaoAddressSearchServiceTest {
     @Autowired
     KakaoAddressSearchService kakaoAddressSearchService;
 
+
     @Autowired
     KakaoCategorySearchService kakaoCategorySearchService;
+
 
     @Test
     @DisplayName("API KEY Test")
@@ -30,6 +32,7 @@ class KakaoAddressSearchServiceTest {
         System.out.println(dto);
     }
 
+
     @Test
     @DisplayName("Search Category Test")
     void categoryTest() {
@@ -42,4 +45,6 @@ class KakaoAddressSearchServiceTest {
                 .resultCategorySearch(y, x, radius);
         System.out.println(dto);
     }
+
+
 }
