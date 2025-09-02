@@ -1,16 +1,13 @@
-# MySQL 셋팅
-server:
-  port: 8080
+#MySQL 셋팅
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/board
+    url: jdbc:mysql://localhost:3306/pharmacy
     username: ${DB_USER}
     password: ${DB_PW}
   sql:
     init:
       mode: NEVER
-
   jpa:
     defer-datasource-initialization: false
     hibernate:
@@ -19,3 +16,8 @@ spring:
       hibernate:
         show_sql: true
         format_sql: true
+
+        kakao:
+          rest:
+            api:
+              key: ${KAKAO_REST_API_KEY}
