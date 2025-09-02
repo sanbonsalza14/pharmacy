@@ -11,13 +11,13 @@ public class DocumentDto {
     private String placeName;
     @JsonProperty("address_name")
     private String addressName;
-    //위도
+    // 위도
     @JsonProperty("y")
     private double latitude;
-    //경도
+    // 경도
     @JsonProperty("x")
     private double longitude;
-    //거리
+    // 거리
     @JsonProperty("distance")
     private double distance;
 }
