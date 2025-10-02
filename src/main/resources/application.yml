@@ -1,26 +1,21 @@
-# MySQL 셋팅
-server:
-  port: 8080
 spring:
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/board
-    username: ${DB_USER}
-    password: ${DB_PW}
-  sql:
-    init:
-      mode: NEVER
+  application:
+    name: pharmacy
+
+  profiles:
+    # 기본은 dev, 배포 시 환경변수 SPRING_PROFILES_ACTIVE=prod 로 덮어쓰기
+    active: ${SPRING_PROFILES_ACTIVE:dev}
 
   jpa:
-    defer-datasource-initialization: false
-    hibernate:
-      ddl-auto: validate
+    open-in-view: false
     properties:
       hibernate:
-        show_sql: true
         format_sql: true
 
-kakao:
-  rest:
-    api:
-      key: ${KAKAO_REST_API_KEY}
+server:
+  port: 8080
+
+logging:
+  level:
+    org.hibernate.SQL: debug
+    org.hibernate.orm.jdbc.bind: trace

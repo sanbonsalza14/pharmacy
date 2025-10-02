@@ -1,37 +1,104 @@
-HELP.md
-.gradle
+############################
+# OS / General
+############################
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+############################
+# Java / Build Outputs
+############################
+*.class
+*.war
+*.ear
+*.zip
+*.tar
+*.gz
+*.tgz
+*.7z
+*.log
+
+# Gradle
+.gradle/
 build/
 !gradle/wrapper/gradle-wrapper.jar
-!**/src/main/**/build/
-!**/src/test/**/build/
 
-### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
-bin/
-!**/src/main/**/bin/
-!**/src/test/**/bin/
+# If any module has its own build dir, ignore them too
+**/build/
 
-### IntelliJ IDEA ###
-.idea
+############################
+# Maven (if present in submodules)
+############################
+target/
+
+############################
+# Spring (optional local overrides)
+############################
+src/main/resources/application-local.yml
+src/main/resources/application-*.local.yml
+
+############################
+# Secrets / Environment (DO NOT COMMIT)
+############################
+.env
+.env.*
+*.env
+*.secret
+*.pem
+*.key
+*.p12
+*.jks
+*.crt
+
+############################
+# IntelliJ IDEA
+############################
+.idea/
 *.iws
 *.iml
 *.ipr
 out/
-!**/src/main/**/out/
-!**/src/test/**/out/
 
-### NetBeans ###
+############################
+# Spring Tool Suite / Eclipse
+############################
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings/
+.springBeans
+.sts4-cache
+bin/
+
+############################
+# NetBeans
+############################
 /nbproject/private/
 /nbbuild/
 /dist/
 /nbdist/
 /.nb-gradle/
 
-### VS Code ###
+############################
+# VS Code
+############################
 .vscode/
+
+############################
+# Crash logs
+############################
+hs_err_pid*
+replay_pid*
+
+############################
+# Keep helpful exceptions from your earlier template
+############################
+HELP.md
+!**/src/main/**/build/
+!**/src/test/**/build/
+!**/src/main/**/bin/
+!**/src/test/**/bin/
+!**/src/main/**/out/
+!**/src/test/**/out/

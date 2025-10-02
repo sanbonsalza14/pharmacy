@@ -1,0 +1,74 @@
+name: Deploy to EC2 (pharmacy)
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # 1) Prepare SSH key  ← 캡처용 단계명
+      - name: Prepare SSH key
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
+
+      - name: Add EC2 host to known_hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
+
+      # 2) Upload repository to EC2  ← 캡처용 단계명
+      - name: Upload repository to EC2
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          source: "."
+          target: "~/pharmacy"     # EC2에 업로드될 경로
+
+      # 3) Create .env & deploy on EC2  ← 캡처용 단계명
+      - name: Create .env & deploy on EC2
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            set -e
+            cd ~/pharmacy
+
+            # .env 생성 (필요 값은 GitHub Secrets로부터)
+            cat > .env << 'EOF'
+            SPRING_PROFILES_ACTIVE=prod
+
+            RDS_ENDPOINT=pharmacy-db.cjkya08w6mh6.ap-northeast-2.rds.amazonaws.com
+            RDS_PORT=3306
+            RDS_DB_NAME=pharmacy
+            RDS_USERNAME=${{ secrets.RDS_USERNAME }}
+            RDS_PASSWORD=${{ secrets.RDS_PASSWORD }}
+
+            KAKAO_REST_API_KEY=${{ secrets.KAKAO_REST_API_KEY }}
+            EOF
+
+            # Docker / Compose 설치 확인
+            if ! command -v docker >/dev/null 2>&1; then
+              curl -fsSL https://get.docker.com | sh
+              sudo usermod -aG docker $USER || true
+            fi
+            if ! command -v docker compose >/dev/null 2>&1; then
+              sudo curl -L "https://github.com/docker/compose/releases/download/v2.28.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+              sudo chmod +x /usr/local/bin/docker-compose
+              ln -s /usr/local/bin/docker-compose ~/.local/bin/docker-compose 2>/dev/null || true
+            fi
+
+            # 빌드 & 실행 (로컬 Dockerfile을 EC2에서 직접 빌드해 올리는 방식)
+            docker compose -f infra/docker-compose.prod.yml up -d --build
+
+            echo "============== docker ps =============="
+            docker ps --format 'table {{.Names}}\t{{.Image}}\t{{.Ports}}\t{{.Status}}'
